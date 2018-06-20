@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_20_213756) do
+ActiveRecord::Schema.define(version: 2018_06_20_233232) do
 
   create_table "addresses", force: :cascade do |t|
     t.string "name"
@@ -28,6 +28,18 @@ ActiveRecord::Schema.define(version: 2018_06_20_213756) do
     t.index ["zip_id"], name: "index_addresses_on_zip_id"
   end
 
+  create_table "addresses_customers", id: false, force: :cascade do |t|
+    t.integer "customer_id", null: false
+    t.integer "address_id", null: false
+    t.index ["address_id", "customer_id"], name: "index_addresses_customers_on_address_id_and_customer_id"
+    t.index ["customer_id", "address_id"], name: "index_addresses_customers_on_customer_id_and_address_id"
+  end
+
+  create_table "addresses_people", id: false, force: :cascade do |t|
+    t.integer "person_id", null: false
+    t.integer "address_id", null: false
+  end
+
   create_table "counties", force: :cascade do |t|
     t.string "name"
     t.integer "state_id"
@@ -43,19 +55,37 @@ ActiveRecord::Schema.define(version: 2018_06_20_213756) do
   end
 
   create_table "customers", force: :cascade do |t|
-    t.string "people"
-    t.string "addresses"
-    t.string "emails"
-    t.string "phones"
+    t.string "name"
+    t.integer "salesperson_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "name"
+    t.index ["salesperson_id"], name: "index_customers_on_salesperson_id"
+  end
+
+  create_table "customers_emails", id: false, force: :cascade do |t|
+    t.integer "customer_id", null: false
+    t.integer "email_id", null: false
+  end
+
+  create_table "customers_people", id: false, force: :cascade do |t|
+    t.integer "customer_id", null: false
+    t.integer "person_id", null: false
+  end
+
+  create_table "customers_phones", id: false, force: :cascade do |t|
+    t.integer "customer_id", null: false
+    t.integer "phone_id", null: false
   end
 
   create_table "emails", force: :cascade do |t|
     t.string "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "emails_people", id: false, force: :cascade do |t|
+    t.integer "person_id", null: false
+    t.integer "email_id", null: false
   end
 
   create_table "items", force: :cascade do |t|
@@ -83,6 +113,11 @@ ActiveRecord::Schema.define(version: 2018_06_20_213756) do
     t.string "emails"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "people_phones", id: false, force: :cascade do |t|
+    t.integer "person_id", null: false
+    t.integer "phone_id", null: false
   end
 
   create_table "phones", force: :cascade do |t|
