@@ -1,0 +1,2 @@
+class CountyController < ApplicationController
+end
