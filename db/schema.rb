@@ -10,12 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_20_233232) do
+ActiveRecord::Schema.define(version: 2018_06_21_152716) do
 
   create_table "addresses", force: :cascade do |t|
     t.string "name"
     t.string "line_1"
     t.string "line_2"
+    t.string "city"
     t.integer "state_id"
     t.integer "county_id"
     t.integer "zip_id"
@@ -38,6 +39,8 @@ ActiveRecord::Schema.define(version: 2018_06_20_233232) do
   create_table "addresses_people", id: false, force: :cascade do |t|
     t.integer "person_id", null: false
     t.integer "address_id", null: false
+    t.index ["address_id", "person_id"], name: "index_addresses_people_on_address_id_and_person_id"
+    t.index ["person_id", "address_id"], name: "index_addresses_people_on_person_id_and_address_id"
   end
 
   create_table "counties", force: :cascade do |t|
@@ -65,16 +68,22 @@ ActiveRecord::Schema.define(version: 2018_06_20_233232) do
   create_table "customers_emails", id: false, force: :cascade do |t|
     t.integer "customer_id", null: false
     t.integer "email_id", null: false
+    t.index ["customer_id", "email_id"], name: "index_customers_emails_on_customer_id_and_email_id"
+    t.index ["email_id", "customer_id"], name: "index_customers_emails_on_email_id_and_customer_id"
   end
 
   create_table "customers_people", id: false, force: :cascade do |t|
     t.integer "customer_id", null: false
     t.integer "person_id", null: false
+    t.index ["customer_id", "person_id"], name: "index_customers_people_on_customer_id_and_person_id"
+    t.index ["person_id", "customer_id"], name: "index_customers_people_on_person_id_and_customer_id"
   end
 
   create_table "customers_phones", id: false, force: :cascade do |t|
     t.integer "customer_id", null: false
     t.integer "phone_id", null: false
+    t.index ["customer_id", "phone_id"], name: "index_customers_phones_on_customer_id_and_phone_id"
+    t.index ["phone_id", "customer_id"], name: "index_customers_phones_on_phone_id_and_customer_id"
   end
 
   create_table "emails", force: :cascade do |t|
@@ -86,15 +95,8 @@ ActiveRecord::Schema.define(version: 2018_06_20_233232) do
   create_table "emails_people", id: false, force: :cascade do |t|
     t.integer "person_id", null: false
     t.integer "email_id", null: false
-  end
-
-  create_table "items", force: :cascade do |t|
-    t.string "name"
-    t.boolean "done"
-    t.integer "todo_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["todo_id"], name: "index_items_on_todo_id"
+    t.index ["email_id", "person_id"], name: "index_emails_people_on_email_id_and_person_id"
+    t.index ["person_id", "email_id"], name: "index_emails_people_on_person_id_and_email_id"
   end
 
   create_table "notes", force: :cascade do |t|
@@ -118,12 +120,14 @@ ActiveRecord::Schema.define(version: 2018_06_20_233232) do
   create_table "people_phones", id: false, force: :cascade do |t|
     t.integer "person_id", null: false
     t.integer "phone_id", null: false
+    t.index ["person_id", "phone_id"], name: "index_people_phones_on_person_id_and_phone_id"
+    t.index ["phone_id", "person_id"], name: "index_people_phones_on_phone_id_and_person_id"
   end
 
   create_table "phones", force: :cascade do |t|
     t.string "number"
     t.string "extension"
-    t.string "type"
+    t.string "line_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -145,13 +149,6 @@ ActiveRecord::Schema.define(version: 2018_06_20_233232) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["country_id"], name: "index_states_on_country_id"
-  end
-
-  create_table "todos", force: :cascade do |t|
-    t.string "title"
-    t.string "created_by"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|

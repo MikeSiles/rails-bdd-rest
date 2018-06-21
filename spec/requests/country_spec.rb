@@ -2,12 +2,20 @@ require 'rails_helper'
 
 RSpec.describe 'Country API', type: :request do
     # set up the api auth
-    let(:user) { create(:user) }
-    let(:headers) { valid_headers }
+    let(:user) {
+        create(:user)
+    }
+    let(:headers) {
+        valid_headers
+    }
 
     # initialize test data
-    let!(:countries) { create_list(:country, 25) }
-    let(:country_id) { countries.first.id }
+    let!(:countries) {
+        create_list(:country, 25)
+    }
+    let(:country_id) {
+        countries.first.id
+    }
 
     # Tests for GET /country
     describe 'GET /country' do
@@ -54,10 +62,9 @@ RSpec.describe 'Country API', type: :request do
 
     # Tests for POST /country (create)
     describe 'POST /country' do
-        let(:valid_attributes) { { name: 'Zimbabwe' }.to_json }
 
         context 'when the body is valid' do
-            before { post '/country', params: valid_attributes, headers: headers }
+            before { post '/country', params: { name: 'Zimbabwe' }.to_json, headers: headers }
 
             it 'creates a country' do
                 expect(json['name']).to eq ('Zimbabwe')
@@ -69,7 +76,11 @@ RSpec.describe 'Country API', type: :request do
         end
 
         context 'when the body is invalid' do
-            before { post '/country', params: { country: 'Zimbabwe' }.to_json, headers: headers }
+            before {
+                post '/country',
+                params: { country: 'Zimbabwe' }.to_json,
+                headers: headers
+            }
 
             it 'returns status code 422' do
                 expect(response).to have_http_status(422)
@@ -78,6 +89,58 @@ RSpec.describe 'Country API', type: :request do
             it 'returns a validation failure message' do
                 expect(response.body).to match(/Validation failed: Name can't be blank/)
             end
+        end
+    end
+
+    # Tests for PUT /country/:id (replace)
+    describe 'PUT /country/:id' do
+
+        context 'when the country exists and the body is valid' do
+            before {
+                put "/country/#{country_id}",
+                params: { name: 'Zimbabwe' }.to_json,
+                headers: headers
+            }
+
+            it 'updates the record' do
+                expect(json).not_to be_empty
+                expect(json['id']).to eq(country_id)
+                expect(json['name']).to eq('Zimbabwe')
+            end
+
+            it 'returns status code 200' do
+                expect(response).to have_http_status(200)
+            end
+        end
+
+        context 'when the country does not exist' do
+            let(:country_id) { 100 }
+
+            before {
+                put "/country/#{country_id}",
+                params: { name: 'Zimbabwe' }.to_json,
+                headers: headers
+            }
+
+            it 'returns status code 404' do
+                expect(response).to have_http_status(404)
+            end
+
+            it 'returns a not found message' do
+                expect(response.body).to match(/{"message":"Couldn't find Country with 'id'=100"}/)
+            end
+        end
+    end
+    # Tests for PATCH /country/:id (update)
+    # Tests for DELETE /country/:id (remove)
+    describe 'DELETE /country/:id' do
+        before {
+            delete "/country/#{country_id}",
+            headers: headers
+        }
+
+        it 'returns status code 204' do
+            expect(response).to have_http_status(204)
         end
     end
 end
