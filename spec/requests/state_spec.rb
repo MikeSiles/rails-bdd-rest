@@ -67,14 +67,14 @@ RSpec.describe 'State API', type: :request do
                 params: {
                     name: 'Lincoln',
                     postal_code: 'LK',
-                    country_id: :country_id,
+                    country_id: country_id,
                  }.to_json,
                  headers: headers }
 
             it 'creates a state' do
                 expect(json['name']).to eq('Lincoln')
                 expect(json['postal_code']).to eq('LK')
-                expect(json['country_id']).to eq(:country_id)
+                expect(json['country_id']).to eq(country_id)
             end
 
             it 'returns a status code 201' do
@@ -88,7 +88,7 @@ RSpec.describe 'State API', type: :request do
                 params: {
                     state: 'Lincoln',
                     postal_code: 'LK',
-                    country_id: :country_id,
+                    country_id: country_id,
                 }.to_json,
                 headers: headers
             }
@@ -106,14 +106,13 @@ RSpec.describe 'State API', type: :request do
     # Tests for PUT /state/:state_id (replace)
     describe 'PUT /state/:state_id' do
         let!(:next_country) { create(:country) }
-
+        
         context 'when the state exists and the body is valid' do
             before {
                 put "/country/#{country_id}/state/#{state_id}",
                 params: {
                     name: 'Jeffersonia',
                     postal_code: 'JF',
-                    country_id: next_country.id
                  }.to_json,
                 headers: headers
             }
@@ -122,7 +121,6 @@ RSpec.describe 'State API', type: :request do
                 expect(json).not_to be_empty
                 expect(json['id']).to eq(state_id)
                 expect(json['name']).to eq('Jeffersonia')
-                expect(json['country_id']).to eq(next_country.id)
             end
 
             it 'returns status code 200' do
@@ -235,9 +233,9 @@ RSpec.describe 'State API', type: :request do
                  headers: headers }
 
             it 'creates a state' do
-                expect(json['name']).to eq ('Linclon')
+                expect(json['name']).to eq ('Lincoln')
                 expect(json['postal_code']).to eq ('LK')
-                expect(json['country_id']).to eq (:country_id)
+                expect(json['country_id']).to eq (country_id)
             end
 
             it 'returns a status code 201' do

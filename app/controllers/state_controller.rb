@@ -2,11 +2,11 @@ class StateController < ApplicationController
     def valid_params
         # if this is in the nested country route, always use
         # that county for country_id
-        unless params[:state][:country_id].present?
-            if params[:country_id].present?
-                params[:state][:country_id] = params[:country_id]
-            end
-        end
+        #unless params[:state][:country_id].present?
+        #    if params[:country_id].present?
+        #        params[:state][:country_id] = params[:country_id]
+        #    end
+        #end
 
         params.permit(:name, :postal_code, :country_id)
     end
